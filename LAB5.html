@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 7 - Grade Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tfoot {
+            font-weight: bold;
+        }
+
+        .input-container {
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input {
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Grade Submission</h1>
+
+    <div class="input-container">
+        <label for="mathGrade">Math Grade:</label>
+        <input type="number" id="mathGrade" min="0" max="100" required>
+
+        <label for="englishGrade">English Grade:</label>
+        <input type="number" id="englishGrade" min="0" max="100" required>
+
+        <button id="submitButton">Submit</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Math</th>
+                <th>English</th>
+                <th>Average</th>
+            </tr>
+        </thead>
+        <tbody id="gradesTableBody">
+            <!-- Rows will be added dynamically here -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Average</td>
+                <td id="mathColumnAverage">-</td>
+                <td id="englishColumnAverage">-</td>
+                <td id="overallAverage">-</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        const mathInput = document.getElementById('mathGrade');
+        const englishInput = document.getElementById('englishGrade');
+        const submitButton = document.getElementById('submitButton');
+        const gradesTableBody = document.getElementById('gradesTableBody');
+        const mathColumnAverage = document.getElementById('mathColumnAverage');
+        const englishColumnAverage = document.getElementById('englishColumnAverage');
+        const overallAverage = document.getElementById('overallAverage');
+
+        const grades = [];
+
+        submitButton.addEventListener('click', () => {
+            const mathGrade = parseFloat(mathInput.value);
+            const englishGrade = parseFloat(englishInput.value);
+
+            if (isNaN(mathGrade) || isNaN(englishGrade)) {
+                alert('Please enter valid grades for both subjects.');
+                return;
+            }
+
+            const average = ((mathGrade + englishGrade) / 2).toFixed(2);
+            grades.push({ math: mathGrade, english: englishGrade, average: parseFloat(average) });
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${grades.length}</td>
+                <td>${mathGrade}</td>
+                <td>${englishGrade}</td>
+                <td>${average}</td>
+            `;
+            gradesTableBody.appendChild(newRow);
+
+            updateAverages();
+            mathInput.value = '';
+            englishInput.value = '';
+        });
+
+        function updateAverages() {
+            let mathSum = 0;
+            let englishSum = 0;
+            let totalAverage = 0;
+
+            grades.forEach(grade => {
+                mathSum += grade.math;
+                englishSum += grade.english;
+                totalAverage += grade.average;
+            });
+
+            const mathAvg = (mathSum / grades.length).toFixed(2);
+            const englishAvg = (englishSum / grades.length).toFixed(2);
+            const overallAvg = (totalAverage / grades.length).toFixed(2);
+
+            mathColumnAverage.textContent = mathAvg;
+            englishColumnAverage.textContent = englishAvg;
+            overallAverage.textContent = overallAvg;
+        }
+    </script>
+</body>
+</html>
